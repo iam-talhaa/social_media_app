@@ -1,5 +1,8 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:social_media_app/customs/custom_btn.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -12,6 +15,19 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   TextEditingController _captionController = TextEditingController();
   final _ref = FirebaseFirestore.instance.collection('caption');
+  XFile? image;
+  File? imagefile;
+
+  void Pick_image() async {
+    final ImagePicker _picker = ImagePicker();
+    image = await _picker.pickImage(source: ImageSource.gallery);
+
+    if (image == null) {
+      return;
+    } else {
+      imagefile = File(image!.path);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -35,24 +51,39 @@ class _HomeScreenState extends State<HomeScreen> {
                   SizedBox(
                     height: 20,
                   ),
-                  Container(
-                    height: 250,
-                    width: double.infinity,
-                    decoration: BoxDecoration(
-                        border: Border.all(color: Colors.black87),
-                        borderRadius: BorderRadius.circular(10)),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        SizedBox(
-                          height: 10,
-                        ),
-                        Text(
-                          "  Tap to Upload image",
-                          style: TextStyle(fontSize: 16),
-                        )
-                      ],
+                  GestureDetector(
+                    onTap: () {
+                      Pick_image();
+                      print('Image pick');
+                    },
+                    child: Container(
+                      height: 250,
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                          border: Border.all(color: Colors.black87),
+                          borderRadius: BorderRadius.circular(10)),
+                      child: image != null
+                          ? Image.file(
+                              File(image!.path),
+                              height: 300.0,
+                              width: 300.0,
+                            )
+                          : Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                SizedBox(
+                                  height: 10,
+                                ),
+                                Icon(Icons.upload_rounded),
+                                Text(
+                                  "  Tap to Upload image",
+                                  style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold),
+                                )
+                              ],
+                            ),
                     ),
                   ),
                   TextFormField(

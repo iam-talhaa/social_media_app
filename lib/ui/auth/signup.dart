@@ -1,7 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dropdown_search/dropdown_search.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:social_media_app/customs/custom_btn.dart';
+import 'package:social_media_app/ui/auth/login.dart';
+import 'package:social_media_app/utils/UTILS.dart';
 
 class Signup_screen extends StatefulWidget {
   const Signup_screen({super.key});
@@ -14,10 +17,11 @@ class _Signup_screenState extends State<Signup_screen> {
   TextEditingController _emaiController = TextEditingController();
   TextEditingController _passController = TextEditingController();
   TextEditingController _nameController = TextEditingController();
-  TextEditingController _ageController = TextEditingController();
-  TextEditingController _genderController = TextEditingController();
+  // TextEditingController _ageController = TextEditingController();
+  // TextEditingController _genderController = TextEditingController();
 
-  final ref = FirebaseFirestore.instance.collection('User');
+  // final ref = FirebaseFirestore.instance.collection('User');
+  FirebaseAuth _auth = FirebaseAuth.instance;
 
   @override
   Widget build(BuildContext context) {
@@ -72,32 +76,6 @@ class _Signup_screenState extends State<Signup_screen> {
             SizedBox(
               height: 10,
             ),
-            TextFormField(
-              controller: _ageController,
-              decoration: InputDecoration(
-                  prefixIcon: Icon(Icons.label_important_outline_sharp),
-                  hintText: "Age",
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(13)),
-                  focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(13))),
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            DropdownSearch<String>(
-                selectedItem: "Gender",
-                items: (filter, infiniteScrollProps) => [
-                      "Male",
-                      "Female",
-                    ],
-                decoratorProps: DropDownDecoratorProps(
-                  decoration: InputDecoration(
-                    labelText: 'Gender ',
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(13)),
-                  ),
-                )),
             SizedBox(
               height: 10,
             ),
@@ -119,7 +97,10 @@ class _Signup_screenState extends State<Signup_screen> {
               children: [
                 Text("Already Have an Account?"),
                 TextButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => Login_screen()));
+                  },
                   child: Text(
                     "login",
                     style: TextStyle(color: Colors.blue),
@@ -134,7 +115,19 @@ class _Signup_screenState extends State<Signup_screen> {
               B_height: 45.0,
               B_text: "Sign Up ",
               B_width: 150.0,
-              ontap: () {},
+              ontap: () {
+                _auth
+                    .createUserWithEmailAndPassword(
+                        email: _emaiController.text.trim().toString(),
+                        password: _passController.text.trim().toString())
+                    .then((V) {
+                  Utils().FlutterToast("SignUp Successfully", Colors.blue);
+                  Navigator.of(context).push(
+                      MaterialPageRoute(builder: (context) => Login_screen()));
+                }).onError((error, s) {
+                  Utils().FlutterToast(error.toString(), Colors.red);
+                });
+              },
             )
           ],
         ),
