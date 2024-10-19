@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:social_media_app/customs/custom_btn.dart';
@@ -18,6 +19,7 @@ class _HomeScreenState extends State<HomeScreen> {
   FirebaseFirestore _ref = FirebaseFirestore.instance;
   XFile? image;
   File? imagefile;
+  String url = '';
 
   void Pick_image() async {
     final ImagePicker _picker = ImagePicker();
@@ -27,6 +29,21 @@ class _HomeScreenState extends State<HomeScreen> {
       return;
     } else {
       imagefile = File(image!.path);
+    }
+  }
+
+  void Add_image() async {
+    if (imagefile != null) {
+      String fileName = DateTime.now().millisecondsSinceEpoch.toString();
+
+      Reference firebaseStorage =
+          FirebaseStorage.instance.ref().child('image/$fileName');
+
+      UploadTask uploadTask = firebaseStorage.putFile(imagefile!);
+
+      await uploadTask;
+
+      url = await firebaseStorage.getDownloadURL();
     }
   }
 
@@ -61,10 +78,10 @@ class _HomeScreenState extends State<HomeScreen> {
             Container(
               height: 500,
               width: double.infinity,
-              decoration: BoxDecoration(),
+              decoration: const BoxDecoration(),
               child: Column(
                 children: [
-                  SizedBox(
+                  const SizedBox(
                     height: 20,
                   ),
                   GestureDetector(
@@ -87,7 +104,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 width: 300.0,
                               ),
                             )
-                          : Row(
+                          : const Row(
                               crossAxisAlignment: CrossAxisAlignment.center,
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
@@ -109,20 +126,21 @@ class _HomeScreenState extends State<HomeScreen> {
                     controller: _captionController,
                     maxLines: 1,
                     decoration: InputDecoration(
-                        prefixIcon: Icon(Icons.image),
+                        prefixIcon: const Icon(Icons.image),
                         hintText: "  Image Caption",
                         border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(13)),
                         focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(13))),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 20,
                   ),
                   Custom_btn(
                       B_height: 45.0,
                       B_text: "Upload Post",
                       ontap: () {
+                        Add_image();
                         Add_caption();
                       },
                       B_width: 190.0)
