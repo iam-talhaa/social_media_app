@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:social_media_app/customs/custom_btn.dart';
+import 'package:social_media_app/utils/UTILS.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -14,18 +15,36 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   TextEditingController _captionController = TextEditingController();
-  final _ref = FirebaseFirestore.instance.collection('caption');
+  FirebaseFirestore _ref = FirebaseFirestore.instance;
   XFile? image;
   File? imagefile;
 
   void Pick_image() async {
     final ImagePicker _picker = ImagePicker();
-    image = await _picker.pickImage(source: ImageSource.gallery);
+    image = await _picker.pickImage(source: ImageSource.camera);
 
     if (image == null) {
       return;
     } else {
       imagefile = File(image!.path);
+    }
+  }
+
+  void Add_caption() {
+    String id = DateTime.now().millisecondsSinceEpoch.toString();
+
+    if (_captionController.text.isEmpty) {
+      Utils().FlutterToast("Enter Caption", Colors.red);
+
+      return;
+    } else {
+      _ref.collection('caption').doc(id).set(
+          {'caption': _captionController.text.trim().toString()}).then((v) {
+        Utils().FlutterToast("Data Added", Colors.blue);
+        _captionController.clear();
+      }).onError((error, s) {
+        Utils().FlutterToast(error.toString(), Colors.red);
+      });
     }
   }
 
@@ -35,9 +54,6 @@ class _HomeScreenState extends State<HomeScreen> {
       appBar: AppBar(
         title: Text("Home screen "),
       ),
-      floatingActionButton: FloatingActionButton(onPressed: () {
-        final id = DateTime.now().millisecondsSinceEpoch.toString();
-      }),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 10),
         child: Column(
@@ -63,10 +79,13 @@ class _HomeScreenState extends State<HomeScreen> {
                           border: Border.all(color: Colors.black87),
                           borderRadius: BorderRadius.circular(10)),
                       child: image != null
-                          ? Image.file(
-                              File(image!.path),
-                              height: 300.0,
-                              width: 300.0,
+                          ? Container(
+                              color: Colors.red,
+                              child: Image.file(
+                                File(image!.path),
+                                height: 300.0,
+                                width: 300.0,
+                              ),
                             )
                           : Row(
                               crossAxisAlignment: CrossAxisAlignment.center,
@@ -103,7 +122,9 @@ class _HomeScreenState extends State<HomeScreen> {
                   Custom_btn(
                       B_height: 45.0,
                       B_text: "Upload Post",
-                      ontap: () {},
+                      ontap: () {
+                        Add_caption();
+                      },
                       B_width: 190.0)
                 ],
               ),
