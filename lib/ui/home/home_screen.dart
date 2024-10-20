@@ -6,6 +6,9 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
 import 'package:social_media_app/customs/custom_btn.dart';
+import 'package:social_media_app/ui/home/Add_post_screen.dart';
+import 'package:social_media_app/ui/home/Profile_screen.dart';
+import 'package:social_media_app/ui/home/fav_screen.dart';
 import 'package:social_media_app/utils/UTILS.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -79,28 +82,52 @@ class _HomeScreenState extends State<HomeScreen> {
         items: [
           /// Home
           SalomonBottomBarItem(
-            icon: Icon(Icons.home),
+            icon: GestureDetector(
+                onTap: () {
+                  Navigator.pushReplacement(context,
+                      MaterialPageRoute(builder: (context) => HomeScreen()));
+                },
+                child: Icon(Icons.home)),
             title: Text("Home"),
             selectedColor: Colors.purple,
           ),
 
           /// Likes
           SalomonBottomBarItem(
-            icon: Icon(Icons.favorite_border),
+            icon: GestureDetector(
+                onTap: () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => Fav_screen()));
+                },
+                child: Icon(Icons.favorite_border)),
             title: Text("Likes"),
             selectedColor: Colors.pink,
           ),
 
           /// Search
           SalomonBottomBarItem(
-            icon: Icon(Icons.add),
+            icon: GestureDetector(
+                onTap: () {
+                  Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => Upload_post_screen()));
+                },
+                child: Icon(Icons.add)),
             title: Text("Search"),
             selectedColor: Colors.orange,
           ),
 
           /// Profile
           SalomonBottomBarItem(
-            icon: Icon(Icons.person),
+            icon: GestureDetector(
+                onTap: () {
+                  Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => profile_screen()));
+                },
+                child: Icon(Icons.person)),
             title: Text("Profile"),
             selectedColor: Colors.teal,
           ),
