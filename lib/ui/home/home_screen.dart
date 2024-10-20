@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
 import 'package:social_media_app/customs/custom_btn.dart';
 import 'package:social_media_app/utils/UTILS.dart';
 
@@ -65,11 +66,45 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
+  var _currentIndex = 0;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text("Home screen "),
+      ),
+      bottomNavigationBar: SalomonBottomBar(
+        currentIndex: _currentIndex,
+        onTap: (i) => setState(() => _currentIndex = i),
+        items: [
+          /// Home
+          SalomonBottomBarItem(
+            icon: Icon(Icons.home),
+            title: Text("Home"),
+            selectedColor: Colors.purple,
+          ),
+
+          /// Likes
+          SalomonBottomBarItem(
+            icon: Icon(Icons.favorite_border),
+            title: Text("Likes"),
+            selectedColor: Colors.pink,
+          ),
+
+          /// Search
+          SalomonBottomBarItem(
+            icon: Icon(Icons.add),
+            title: Text("Search"),
+            selectedColor: Colors.orange,
+          ),
+
+          /// Profile
+          SalomonBottomBarItem(
+            icon: Icon(Icons.person),
+            title: Text("Profile"),
+            selectedColor: Colors.teal,
+          ),
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 10),
