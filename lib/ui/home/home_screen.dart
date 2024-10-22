@@ -85,6 +85,7 @@ class _HomeScreenState extends State<HomeScreen> {
             icon: GestureDetector(
                 onTap: () {
                   print("NAvigator");
+                  print("NAvigator");
                   Navigator.pushReplacement(context,
                       MaterialPageRoute(builder: (context) => HomeScreen()));
                 },
