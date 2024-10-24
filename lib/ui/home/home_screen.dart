@@ -87,6 +87,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   print("NAvigator");
                   print("NAvigator");
                   print("NAvigator");
+                  print("NAvigator");
                   Navigator.pushReplacement(context,
                       MaterialPageRoute(builder: (context) => HomeScreen()));
                 },
