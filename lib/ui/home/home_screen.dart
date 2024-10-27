@@ -26,6 +26,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void Pick_image() async {
     print("Print");
+    print("Print");
     final ImagePicker _picker = ImagePicker();
     image = await _picker.pickImage(source: ImageSource.camera);
 
